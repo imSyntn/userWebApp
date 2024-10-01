@@ -65,26 +65,39 @@ const AddEdit = ({ addUser, usersInfo, setUsersInfo }) => {
     }, [userData.phone])
 
     const changeEvent = (e, key) => {
-        // if()
         setUserData(prev => ({ ...prev, [key]: e.target.value }))
     }
 
     const validateInput = () => {
         const newErrors = {};
-        if (!userData.email.includes('.') || !userData.email.includes('@')) {
-            newErrors.email = 'Invalid email.';
-        }
+
         const validNumber = userData.phone.length === 10 && !isNaN(userData.phone);
         if (!validNumber) {
             newErrors.phone = 'Invalid phone number.';
         }
-        if(usersInfo.find(item=> item.email == userData.email)) {
-            newErrors.email = 'Email must be unique.'
+        if (userID) {
+            const obj = usersInfo.find(item => item.id == userID)
+            console.log('edit', obj)
+            if (obj.email != userData.email) {
+                if (usersInfo.find(item => item.email == userData.email)) {
+                    newErrors.email = 'Email must be unique.'
+                }
+                if (!userData.email.includes('.') || !userData.email.includes('@')) {
+                    newErrors.email = 'Invalid email.';
+                }
+            }
+        } else {
+            if (usersInfo.find(item => item.email == userData.email)) {
+                newErrors.email = 'Email must be unique.'
+            }
+            if (!userData.email.includes('.') || !userData.email.includes('@')) {
+                newErrors.email = 'Invalid email.';
+            }
         }
-    
+
         return newErrors;
     };
-    
+
     const handleSubmit = (e) => {
         e.preventDefault();
         const validationErrors = validateInput();
@@ -103,7 +116,7 @@ const AddEdit = ({ addUser, usersInfo, setUsersInfo }) => {
         }
         navigate('/');
     };
-    
+
 
     return (
         <div className='AddEdit'>
